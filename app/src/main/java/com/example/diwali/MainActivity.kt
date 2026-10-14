@@ -1,27 +1,30 @@
 package com.example.diwali
 
-import android.view.WindowInsets
-import android.view.WindowInsetsController
-import com.google.androidgamesdk.GameActivity
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import com.example.diwali.data.GamePreferences
+import com.example.diwali.sound.SoundManager
+import com.example.diwali.ui.HomeScreen
 
-class MainActivity : GameActivity() {
-    companion object {
-        init {
-            System.loadLibrary("diwali")
-        }
-    }
+class MainActivity : ComponentActivity() {
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) {
-            hideSystemUi()
-        }
-    }
+    private lateinit var preferences: GamePreferences
+    private lateinit var soundManager: SoundManager
 
-    private fun hideSystemUi() {
-        window.insetsController?.apply {
-            hide(WindowInsets.Type.systemBars())
-            systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
+        preferences = GamePreferences(applicationContext)
+        soundManager = SoundManager(applicationContext)
+
+        setContent {
+            HomeScreen(
+                preferences = preferences,
+                soundManager = soundManager
+            )
         }
     }
 }
