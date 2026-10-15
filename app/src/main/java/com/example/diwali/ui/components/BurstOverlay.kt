@@ -134,7 +134,7 @@ fun BurstOverlay(
                 .alpha(textAlpha)
         ) {
             Text(
-                text = "💥 DHAMAKA! 💥",
+                text = "DHAMAKA!",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Black,
                 color = GoldYellow
@@ -149,7 +149,7 @@ fun BurstOverlay(
                     .padding(horizontal = 20.dp, vertical = 8.dp)
             ) {
                 Text(
-                    text = "+$earnedCoins COINS! 🪙🎉",
+                    text = "+$earnedCoins COINS!",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = GoldLight

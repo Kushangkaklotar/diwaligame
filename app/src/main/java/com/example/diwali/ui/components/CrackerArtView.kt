@@ -9,6 +9,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.unit.dp
 import com.example.diwali.model.CrackerType
 import com.example.diwali.ui.theme.FestiveOrange
@@ -33,7 +35,7 @@ import kotlin.math.sin
 @Composable
 fun CrackerArtView(
     type: CrackerType,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier.fillMaxSize()
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "CrackerArtAnim")
 
@@ -67,21 +69,38 @@ fun CrackerArtView(
     )
 
     Box(
-        modifier = modifier.size(190.dp),
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-        Canvas(modifier = Modifier.size(175.dp)) {
-            val center = Offset(size.width / 2, size.height / 2 + floatAnim)
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val minDim = minOf(size.width, size.height)
+            if (minDim <= 0f) return@Canvas
 
-            when (type) {
-                CrackerType.CHAKRI -> drawChakri(center, rotationAnim, sparkPulse)
-                CrackerType.ANAR -> drawAnar(center, sparkPulse)
-                CrackerType.PHOOLJHADI -> drawPhooljhadi(center, sparkPulse)
+            // Scale drawings so they never clip in any container size
+            val refSize = 145f
+            val scaleFactor = (minDim * 0.84f) / refSize
+            val center = Offset(size.width / 2f, size.height / 2f + floatAnim * (scaleFactor.coerceIn(0.2f, 1f)))
+
+            scale(scaleFactor, pivot = center) {
+                when (type) {
                 CrackerType.SUTLI_BOMB -> drawSutliBomb(center, sparkPulse)
                 CrackerType.ROCKET -> drawRocket(center, sparkPulse)
+                CrackerType.PHOOLJHADI -> drawPhooljhadi(center, sparkPulse)
+                CrackerType.CHAKRI -> drawChakri(center, rotationAnim, sparkPulse)
+                CrackerType.ANAR -> drawAnar(center, sparkPulse)
+                CrackerType.PENCIL_WHIP -> drawPencilWhip(center, sparkPulse)
+                CrackerType.PAPER_BOMB -> drawLaxmiBomb(center, sparkPulse)
+                CrackerType.LADI -> drawLadi(center, sparkPulse)
+                CrackerType.SNAKE_TABLET -> drawSnakeTablet(center, sparkPulse)
+                CrackerType.COLOR_SPARKLER -> drawColorSparkler(center, sparkPulse)
+                CrackerType.AERIAL_SHELL -> drawAerialShell(center, sparkPulse)
+                CrackerType.WHIZ_WHEEL -> drawWhizWheel(center, rotationAnim, sparkPulse)
+                CrackerType.ELECTRIC_FOUNTAIN -> drawElectricFountain(center, sparkPulse)
+                CrackerType.SKY_SHOTS -> drawSkyShots(center, sparkPulse)
             }
         }
     }
+}
 }
 
 // 1. Chakri (Ground Spinner)
@@ -474,3 +493,582 @@ private fun DrawScope.drawRocket(center: Offset, sparkPulse: Float) {
     }
     drawPath(rightFin, Color(0xFFFF5722))
 }
+
+// 6. Magic Whip / Pencil (Crackling Stick)
+private fun DrawScope.drawPencilWhip(center: Offset, sparkPulse: Float) {
+    val stickHeight = 110f
+    val stickWidth = 14f
+    val stickTop = center.y - stickHeight / 2
+
+    // Glowing aura around tip
+    drawCircle(
+        brush = Brush.radialGradient(
+            colors = listOf(Color(0xFFEA80FC).copy(alpha = 0.5f * sparkPulse), Color.Transparent),
+            center = Offset(center.x, stickTop),
+            radius = 35f * sparkPulse
+        ),
+        radius = 35f * sparkPulse,
+        center = Offset(center.x, stickTop)
+    )
+
+    // Pencil Body Cylinder
+    drawRoundRect(
+        brush = Brush.verticalGradient(
+            colors = listOf(Color(0xFF8E24AA), Color(0xFF4A148C))
+        ),
+        topLeft = Offset(center.x - stickWidth / 2, stickTop + 14f),
+        size = Size(stickWidth, stickHeight - 14f),
+        cornerRadius = androidx.compose.ui.geometry.CornerRadius(4f, 4f)
+    )
+
+    // Striped spiral rings on pencil
+    for (i in 0 until 5) {
+        val y = stickTop + 24f + i * 16f
+        drawLine(
+            color = GoldYellow,
+            start = Offset(center.x - stickWidth / 2, y),
+            end = Offset(center.x + stickWidth / 2, y + 6f),
+            strokeWidth = 3f
+        )
+    }
+
+    // Pointed pencil tip
+    val tipPath = Path().apply {
+        moveTo(center.x, stickTop)
+        lineTo(center.x + stickWidth / 2, stickTop + 14f)
+        lineTo(center.x - stickWidth / 2, stickTop + 14f)
+        close()
+    }
+    drawPath(tipPath, Color(0xFFFFD54F))
+
+    // Tiny crackling sparks at tip
+    val sparkColors = listOf(Color.White, GoldYellow, Color(0xFFEA80FC))
+    for (i in 0 until 6) {
+        val angle = Math.toRadians((i * 60.0))
+        val dist = 18f * sparkPulse
+        drawLine(
+            color = sparkColors[i % sparkColors.size],
+            start = Offset(center.x, stickTop),
+            end = Offset((center.x + dist * cos(angle)).toFloat(), (stickTop + dist * sin(angle)).toFloat()),
+            strokeWidth = 2.5f,
+            cap = StrokeCap.Round
+        )
+    }
+}
+
+// 7. Laxmi Bomb (Red Paper Packet Bomb)
+private fun DrawScope.drawLaxmiBomb(center: Offset, sparkPulse: Float) {
+    val bombSize = 68f
+    val bombTop = center.y - bombSize / 2
+
+    // Red packet bomb body
+    drawRoundRect(
+        brush = Brush.verticalGradient(
+            colors = listOf(Color(0xFFE53935), Color(0xFFB71C1C))
+        ),
+        topLeft = Offset(center.x - bombSize / 2, bombTop),
+        size = Size(bombSize, bombSize),
+        cornerRadius = androidx.compose.ui.geometry.CornerRadius(8f, 8f)
+    )
+
+    // Golden frame border
+    drawRoundRect(
+        color = GoldYellow,
+        topLeft = Offset(center.x - bombSize / 2 + 5f, bombTop + 5f),
+        size = Size(bombSize - 10f, bombSize - 10f),
+        cornerRadius = androidx.compose.ui.geometry.CornerRadius(6f, 6f),
+        style = Stroke(width = 2.5f)
+    )
+
+    // Golden tying ribbon across center
+    drawLine(
+        color = Color(0xFFFFD54F),
+        start = Offset(center.x, bombTop),
+        end = Offset(center.x, bombTop + bombSize),
+        strokeWidth = 4f
+    )
+    drawLine(
+        color = Color(0xFFFFD54F),
+        start = Offset(center.x - bombSize / 2, center.y),
+        end = Offset(center.x + bombSize / 2, center.y),
+        strokeWidth = 4f
+    )
+
+    // Golden Lakshmi emblem circle in center
+    drawCircle(
+        color = GoldYellow,
+        radius = 14f,
+        center = center
+    )
+    drawCircle(
+        color = Color(0xFFD50000),
+        radius = 11f,
+        center = center
+    )
+
+    // Top fuse with spark
+    drawLine(
+        color = Color(0xFF8D6E63),
+        start = Offset(center.x, bombTop),
+        end = Offset(center.x + 14f, bombTop - 22f),
+        strokeWidth = 4f,
+        cap = StrokeCap.Round
+    )
+    drawCircle(
+        brush = Brush.radialGradient(
+            colors = listOf(Color.White, GoldYellow, Color.Transparent),
+            center = Offset(center.x + 14f, bombTop - 22f),
+            radius = 12f * sparkPulse
+        ),
+        radius = 12f * sparkPulse,
+        center = Offset(center.x + 14f, bombTop - 22f)
+    )
+}
+
+// 8. 1000 Ladi (Series Garland of Crackers)
+private fun DrawScope.drawLadi(center: Offset, sparkPulse: Float) {
+    val garlandWidth = 50f
+    val garlandHeight = 110f
+    val topY = center.y - garlandHeight / 2
+
+    // Main central string
+    drawLine(
+        color = Color(0xFF8D6E63),
+        start = Offset(center.x, topY - 14f),
+        end = Offset(center.x, topY + garlandHeight),
+        strokeWidth = 3.5f
+    )
+
+    // Rows of miniature red crackers tied to string
+    val rows = 6
+    for (r in 0 until rows) {
+        val y = topY + r * 16f
+        // Left cracker
+        drawRoundRect(
+            color = Color(0xFFD32F2F),
+            topLeft = Offset(center.x - garlandWidth / 2, y),
+            size = Size(garlandWidth / 2 - 3f, 10f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(3f, 3f)
+        )
+        // Yellow tip
+        drawRect(
+            color = GoldYellow,
+            topLeft = Offset(center.x - garlandWidth / 2, y + 2f),
+            size = Size(5f, 6f)
+        )
+
+        // Right cracker
+        drawRoundRect(
+            color = Color(0xFFD32F2F),
+            topLeft = Offset(center.x + 3f, y),
+            size = Size(garlandWidth / 2 - 3f, 10f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(3f, 3f)
+        )
+        // Yellow tip
+        drawRect(
+            color = GoldYellow,
+            topLeft = Offset(center.x + garlandWidth / 2 - 5f, y + 2f),
+            size = Size(5f, 6f)
+        )
+    }
+
+    // Top braided fuse with sizzling spark
+    drawCircle(
+        brush = Brush.radialGradient(
+            colors = listOf(Color.White, GoldYellow, Color.Transparent),
+            center = Offset(center.x, topY - 14f),
+            radius = 14f * sparkPulse
+        ),
+        radius = 14f * sparkPulse,
+        center = Offset(center.x, topY - 14f)
+    )
+}
+
+// 9. Snake Tablet (Saap ni Goli)
+private fun DrawScope.drawSnakeTablet(center: Offset, sparkPulse: Float) {
+    // Ceramic Dish / Plate base
+    drawOval(
+        brush = Brush.radialGradient(
+            colors = listOf(Color(0xFF78909C), Color(0xFF37474F)),
+            center = center,
+            radius = 60f
+        ),
+        topLeft = Offset(center.x - 56f, center.y + 4f),
+        size = Size(112f, 28f)
+    )
+    drawOval(
+        color = Color(0xFFB0BEC5),
+        topLeft = Offset(center.x - 52f, center.y + 6f),
+        size = Size(104f, 22f),
+        style = Stroke(width = 2.5f)
+    )
+
+    // Black Snake Tablet (solid cylinder)
+    val tabRadius = 26f
+    drawCircle(
+        brush = Brush.radialGradient(
+            colors = listOf(Color(0xFF424242), Color(0xFF212121), Color(0xFF000000)),
+            center = Offset(center.x, center.y - 2f),
+            radius = tabRadius
+        ),
+        radius = tabRadius,
+        center = Offset(center.x, center.y - 2f)
+    )
+
+    // Hot glowing chemical center
+    drawCircle(
+        brush = Brush.radialGradient(
+            colors = listOf(Color(0xFFFFD54F), Color(0xFFFF5722), Color.Transparent),
+            center = Offset(center.x, center.y - 2f),
+            radius = 14f * sparkPulse
+        ),
+        radius = 14f * sparkPulse,
+        center = Offset(center.x, center.y - 2f)
+    )
+
+    // Wisp of curly dark ash emerging
+    val ashPath = Path().apply {
+        moveTo(center.x, center.y - 12f)
+        cubicTo(
+            center.x - 14f, center.y - 30f,
+            center.x + 18f, center.y - 48f,
+            center.x + 2f, center.y - 66f
+        )
+    }
+    drawPath(
+        ashPath,
+        color = Color(0xCC37474F),
+        style = Stroke(width = 9f, cap = StrokeCap.Round)
+    )
+}
+
+// 10. Color Sparkler (Rainbow Neon Sparkler)
+private fun DrawScope.drawColorSparkler(center: Offset, sparkPulse: Float) {
+    // Metallic wire handle
+    drawLine(
+        color = Color(0xFFB0BEC5),
+        start = Offset(center.x - 24f, center.y + 54f),
+        end = Offset(center.x + 24f, center.y - 54f),
+        strokeWidth = 5f,
+        cap = StrokeCap.Round
+    )
+
+    // Rainbow neon chemical coating on upper section
+    drawLine(
+        brush = Brush.linearGradient(
+            colors = listOf(Color(0xFF00E676), Color(0xFFFF1744), Color(0xFF00E5FF)),
+            start = Offset(center.x - 4f, center.y + 8f),
+            end = Offset(center.x + 24f, center.y - 54f)
+        ),
+        start = Offset(center.x - 4f, center.y + 8f),
+        end = Offset(center.x + 24f, center.y - 54f),
+        strokeWidth = 10f,
+        cap = StrokeCap.Round
+    )
+
+    // Brilliant multicolored sparkling starburst at the tip
+    val tip = Offset(center.x + 24f, center.y - 54f)
+    val colors = listOf(Color(0xFF00E676), Color(0xFFFF1744), Color(0xFF00E5FF), Color(0xFFFFEA00), Color.White)
+    for (i in 0 until 8) {
+        val angle = Math.toRadians(i * 45.0)
+        val len = (22f + (i % 2) * 8f) * sparkPulse
+        drawLine(
+            color = colors[i % colors.size],
+            start = tip,
+            end = Offset((tip.x + len * cos(angle)).toFloat(), (tip.y + len * sin(angle)).toFloat()),
+            strokeWidth = 3f,
+            cap = StrokeCap.Round
+        )
+    }
+}
+
+// 11. Aerial Shell (Sky Blast Mortar Pipe)
+private fun DrawScope.drawAerialShell(center: Offset, sparkPulse: Float) {
+    val mortarWidth = 54f
+    val mortarHeight = 84f
+    val baseTop = center.y + 24f
+
+    // Heavy wooden launch base
+    drawRoundRect(
+        color = Color(0xFF4E342E),
+        topLeft = Offset(center.x - 42f, baseTop),
+        size = Size(84f, 20f),
+        cornerRadius = androidx.compose.ui.geometry.CornerRadius(4f, 4f)
+    )
+
+    // Mortar Launch Tube Cylinder
+    drawRoundRect(
+        brush = Brush.horizontalGradient(
+            colors = listOf(Color(0xFF1565C0), Color(0xFF0D47A1), Color(0xFF1976D2))
+        ),
+        topLeft = Offset(center.x - mortarWidth / 2, center.y - 48f),
+        size = Size(mortarWidth, mortarHeight),
+        cornerRadius = androidx.compose.ui.geometry.CornerRadius(6f, 6f)
+    )
+
+    // Metal reinforcement rings
+    drawLine(
+        color = GoldYellow,
+        start = Offset(center.x - mortarWidth / 2, center.y - 36f),
+        end = Offset(center.x + mortarWidth / 2, center.y - 36f),
+        strokeWidth = 4f
+    )
+    drawLine(
+        color = GoldYellow,
+        start = Offset(center.x - mortarWidth / 2, center.y + 10f),
+        end = Offset(center.x + mortarWidth / 2, center.y + 10f),
+        strokeWidth = 4f
+    )
+
+    // Spherical Shell inside top rim
+    drawCircle(
+        color = Color(0xFFFFB300),
+        radius = 18f,
+        center = Offset(center.x, center.y - 50f)
+    )
+
+    // Fuse emerging from mortar
+    drawLine(
+        color = Color(0xFF8D6E63),
+        start = Offset(center.x, center.y - 50f),
+        end = Offset(center.x + 20f, center.y - 74f),
+        strokeWidth = 3.5f,
+        cap = StrokeCap.Round
+    )
+    drawCircle(
+        brush = Brush.radialGradient(
+            colors = listOf(Color.White, GoldYellow, Color.Transparent),
+            center = Offset(center.x + 20f, center.y - 74f),
+            radius = 12f * sparkPulse
+        ),
+        radius = 12f * sparkPulse,
+        center = Offset(center.x + 20f, center.y - 74f)
+    )
+}
+
+// 12. Whiz Wheel (Aerodynamic Aerial Spinner)
+private fun DrawScope.drawWhizWheel(center: Offset, rotation: Float, sparkPulse: Float) {
+    rotate(rotation, pivot = center) {
+        // Outer glow
+        drawCircle(
+            brush = Brush.radialGradient(
+                colors = listOf(Color(0xFF00B0FF).copy(alpha = 0.4f * sparkPulse), Color.Transparent),
+                center = center,
+                radius = 65f
+            ),
+            radius = 65f,
+            center = center
+        )
+
+        // Central disc
+        drawCircle(
+            brush = Brush.radialGradient(
+                colors = listOf(Color(0xFF40C4FF), Color(0xFF0288D1)),
+                center = center,
+                radius = 32f
+            ),
+            radius = 32f,
+            center = center
+        )
+
+        // 3 Aerodynamic Propeller Wings
+        for (i in 0 until 3) {
+            val angle = Math.toRadians(i * 120.0)
+            val wingEnd = Offset(
+                (center.x + 50f * cos(angle)).toFloat(),
+                (center.y + 50f * sin(angle)).toFloat()
+            )
+            drawLine(
+                color = Color(0xFFFFAB00),
+                start = center,
+                end = wingEnd,
+                strokeWidth = 9f,
+                cap = StrokeCap.Round
+            )
+            drawCircle(
+                color = Color.White,
+                radius = 6f,
+                center = wingEnd
+            )
+        }
+
+        // Center hub
+        drawCircle(color = Color(0xFFD50000), radius = 10f, center = center)
+    }
+}
+
+// 13. Electric Fountain (Cold Pyro Silver Geyser)
+private fun DrawScope.drawElectricFountain(center: Offset, sparkPulse: Float) {
+    val fountainWidth = 48f
+    val fountainHeight = 88f
+    val fountainTop = center.y - fountainHeight / 2
+
+    // Sleek Silver Metallic Cylinder
+    drawRoundRect(
+        brush = Brush.horizontalGradient(
+            colors = listOf(Color(0xFFB0BEC5), Color(0xFFECEFF1), Color(0xFFCFD8DC), Color(0xFF90A4AE))
+        ),
+        topLeft = Offset(center.x - fountainWidth / 2, fountainTop),
+        size = Size(fountainWidth, fountainHeight),
+        cornerRadius = androidx.compose.ui.geometry.CornerRadius(6f, 6f)
+    )
+
+    // Electric Cyan Festive Banner
+    drawRect(
+        color = Color(0xFF00E5FF),
+        topLeft = Offset(center.x - fountainWidth / 2, center.y - 12f),
+        size = Size(fountainWidth, 24f)
+    )
+    drawRect(
+        color = Color(0xFF00B0FF),
+        topLeft = Offset(center.x - fountainWidth / 2, center.y - 4f),
+        size = Size(fountainWidth, 8f)
+    )
+
+    // Star / Electric Spark symbol on cylinder
+    drawCircle(color = Color.White, radius = 6f, center = center)
+
+    // Nozzle Cone on top
+    val conePath = Path().apply {
+        moveTo(center.x, fountainTop - 12f)
+        lineTo(center.x + fountainWidth / 2 - 4f, fountainTop)
+        lineTo(center.x - fountainWidth / 2 + 4f, fountainTop)
+        close()
+    }
+    drawPath(conePath, Color(0xFFECEFF1))
+
+    // Crystalline Silver-White Spark Fountain at Nozzle
+    for (i in 0 until 7) {
+        val angle = Math.toRadians(270.0 + (i - 3) * 18.0)
+        val len = (24f + (i % 3) * 8f) * sparkPulse
+        drawLine(
+            color = if (i % 2 == 0) Color.White else Color(0xFF80D8FF),
+            start = Offset(center.x, fountainTop - 12f),
+            end = Offset((center.x + len * cos(angle)).toFloat(), (fountainTop - 12f + len * sin(angle)).toFloat()),
+            strokeWidth = 2.8f,
+            cap = StrokeCap.Round
+        )
+    }
+}
+
+// 14. Sky Shots Multi-Tube Aerial Battery Cake
+private fun DrawScope.drawSkyShots(center: Offset, sparkPulse: Float) {
+    val boxWidth = 92f
+    val boxHeight = 84f
+    val boxTop = center.y - boxHeight / 2f + 8f
+
+    // Ambient Golden Violet Glow
+    drawCircle(
+        brush = Brush.radialGradient(
+            colors = listOf(Color(0xFFEA80FC).copy(alpha = 0.35f * sparkPulse), Color.Transparent),
+            center = center,
+            radius = boxWidth * 1.1f
+        ),
+        radius = boxWidth * 1.1f,
+        center = center
+    )
+
+    // Base Shadow
+    drawOval(
+        color = Color(0x77000000),
+        topLeft = Offset(center.x - boxWidth * 0.52f, boxTop + boxHeight - 8f),
+        size = Size(boxWidth * 1.04f, 22f)
+    )
+
+    // Main Battery Box Body (Multi-layer gradient)
+    drawRoundRect(
+        brush = Brush.verticalGradient(
+            colors = listOf(Color(0xFF6A1B9A), Color(0xFF4A148C), Color(0xFF311B92))
+        ),
+        topLeft = Offset(center.x - boxWidth / 2f, boxTop),
+        size = Size(boxWidth, boxHeight),
+        cornerRadius = androidx.compose.ui.geometry.CornerRadius(10f, 10f)
+    )
+
+    // Outer Border
+    drawRoundRect(
+        color = GoldYellow,
+        topLeft = Offset(center.x - boxWidth / 2f, boxTop),
+        size = Size(boxWidth, boxHeight),
+        cornerRadius = androidx.compose.ui.geometry.CornerRadius(10f, 10f),
+        style = Stroke(width = 2.2f)
+    )
+
+    // Gold Foil Festive Ribbon Wrap
+    drawRect(
+        brush = Brush.horizontalGradient(
+            colors = listOf(Color(0xFFFFD54F), Color(0xFFFFB300), Color(0xFFFFE082))
+        ),
+        topLeft = Offset(center.x - boxWidth / 2f, boxTop + 24f),
+        size = Size(boxWidth, 20f)
+    )
+    drawRect(
+        color = Color(0xFFD50000),
+        topLeft = Offset(center.x - boxWidth / 2f, boxTop + 30f),
+        size = Size(boxWidth, 8f)
+    )
+
+    // Decorative Stars on Gold Ribbon
+    for (i in -2..2) {
+        val sx = center.x + i * 18f
+        val sy = boxTop + 34f
+        drawCircle(color = Color.White, radius = 2.5f, center = Offset(sx, sy))
+    }
+
+    // Top Tube Battery Plate (Bevel perspective showing mortar tube mouths)
+    val plateHeight = 24f
+    drawOval(
+        brush = Brush.verticalGradient(
+            colors = listOf(Color(0xFF263238), Color(0xFF37474F))
+        ),
+        topLeft = Offset(center.x - boxWidth / 2f + 4f, boxTop - plateHeight / 2f),
+        size = Size(boxWidth - 8f, plateHeight)
+    )
+    drawOval(
+        color = GoldYellow,
+        topLeft = Offset(center.x - boxWidth / 2f + 4f, boxTop - plateHeight / 2f),
+        size = Size(boxWidth - 8f, plateHeight),
+        style = Stroke(width = 1.5f)
+    )
+
+    // 7 Mortar Tube Bores (1 center + 6 hexagonal rosette)
+    val tubeRadius = 5.2f
+    // Center tube
+    drawCircle(color = Color(0xFF111111), radius = tubeRadius, center = Offset(center.x, boxTop))
+    drawCircle(color = Color(0xFFFFD54F), radius = tubeRadius, center = Offset(center.x, boxTop), style = Stroke(width = 1.2f))
+
+    // 6 outer tubes
+    val rosetteRadiusX = 26f
+    val rosetteRadiusY = 7.5f
+    for (i in 0 until 6) {
+        val rad = Math.toRadians(i * 60.0)
+        val tx = (center.x + rosetteRadiusX * cos(rad)).toFloat()
+        val ty = (boxTop + rosetteRadiusY * sin(rad)).toFloat()
+        drawCircle(color = Color(0xFF111111), radius = tubeRadius, center = Offset(tx, ty))
+        drawCircle(color = Color(0xFFFFAB00), radius = tubeRadius, center = Offset(tx, ty), style = Stroke(width = 1.2f))
+    }
+
+    // Master Green Ignition Fuse sticking out from top-right
+    val fuseBase = Offset(center.x + boxWidth / 2f - 14f, boxTop - 2f)
+    val fuseTip = Offset(center.x + boxWidth / 2f + 10f, boxTop - 24f)
+    drawLine(
+        color = Color(0xFF43A047),
+        start = fuseBase,
+        end = fuseTip,
+        strokeWidth = 3.5f,
+        cap = StrokeCap.Round
+    )
+    // Sparkling fuse ember tip
+    drawCircle(
+        color = Color(0xFFFF6D00),
+        radius = 4.5f * sparkPulse,
+        center = fuseTip
+    )
+    drawCircle(
+        color = Color.White,
+        radius = 2.2f,
+        center = fuseTip
+    )
+}
+
+

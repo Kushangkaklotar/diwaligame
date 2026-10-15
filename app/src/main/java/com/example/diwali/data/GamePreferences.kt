@@ -16,6 +16,8 @@ class GamePreferences(context: Context) {
         private const val KEY_FIRST_LAUNCH = "key_first_launch"
         private const val KEY_UNLOCKED_CRACKERS = "key_unlocked_crackers"
         private const val KEY_SOUND_ENABLED = "key_sound_enabled"
+        private const val KEY_PREFIX_LEVEL = "key_cracker_level_"
+        private const val KEY_CAMPAIGN_INDEX = "key_campaign_index"
         private const val INITIAL_COINS = 100
     }
 
@@ -24,6 +26,9 @@ class GamePreferences(context: Context) {
 
     private val _unlockedCrackerIds = MutableStateFlow(loadUnlockedIds())
     val unlockedCrackerIds: StateFlow<Set<String>> = _unlockedCrackerIds.asStateFlow()
+
+    private val _levelsRevision = MutableStateFlow(0)
+    val levelsRevision: StateFlow<Int> = _levelsRevision.asStateFlow()
 
     private val _isSoundEnabled = MutableStateFlow(prefs.getBoolean(KEY_SOUND_ENABLED, true))
     val isSoundEnabled: StateFlow<Boolean> = _isSoundEnabled.asStateFlow()
@@ -52,7 +57,11 @@ class GamePreferences(context: Context) {
             prefs.edit().putStringSet(KEY_UNLOCKED_CRACKERS, defaultUnlocked).apply()
             defaultUnlocked
         } else {
-            savedSet
+            val combined = (savedSet + defaultUnlocked).toSet()
+            if (combined.size != savedSet.size) {
+                prefs.edit().putStringSet(KEY_UNLOCKED_CRACKERS, combined).apply()
+            }
+            combined
         }
     }
 
@@ -85,6 +94,50 @@ class GamePreferences(context: Context) {
 
     fun isCrackerUnlocked(crackerId: String): Boolean {
         return _unlockedCrackerIds.value.contains(crackerId)
+    }
+
+    fun getCoins(): Int = _coinsFlow.value
+
+    fun getUnlockedLevel(crackerId: String): Int {
+        return prefs.getInt(KEY_PREFIX_LEVEL + crackerId, 1).coerceIn(1, 25)
+    }
+
+    fun getCompletedLevel(crackerId: String): Int {
+        return prefs.getInt("key_cracker_completed_" + crackerId, 0).coerceIn(0, 25)
+    }
+
+    fun unlockNextLevel(crackerId: String, cost: Int): Boolean {
+        val current = getUnlockedLevel(crackerId)
+        if (current >= 25) return false
+        if (spendCoins(cost)) {
+            val next = current + 1
+            prefs.edit().putInt(KEY_PREFIX_LEVEL + crackerId, next).apply()
+            _levelsRevision.value = _levelsRevision.value + 1
+            return true
+        }
+        return false
+    }
+
+    fun isLevelUnlocked(crackerId: String, level: Int): Boolean {
+        if (level <= 1) return true
+        return level <= getUnlockedLevel(crackerId)
+    }
+
+    fun completeLevel(crackerId: String, level: Int) {
+        val current = getCompletedLevel(crackerId)
+        if (level > current) {
+            prefs.edit().putInt("key_cracker_completed_" + crackerId, level.coerceIn(1, 25)).apply()
+            _levelsRevision.value = _levelsRevision.value + 1
+        }
+    }
+
+    fun getCampaignProgressIndex(): Int {
+        return prefs.getInt(KEY_CAMPAIGN_INDEX, 0)
+    }
+
+    fun advanceCampaignProgress() {
+        val next = getCampaignProgressIndex() + 1
+        prefs.edit().putInt(KEY_CAMPAIGN_INDEX, next).apply()
     }
 
     fun toggleSound(): Boolean {

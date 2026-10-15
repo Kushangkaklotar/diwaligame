@@ -52,11 +52,11 @@ fun CrackerPager(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Horizontal Pager with 3D scaling card effect
+        // Horizontal Pager showing ~3 cards in one line (focused center + adjacent peeks)
         HorizontalPager(
             state = pagerState,
-            contentPadding = PaddingValues(horizontal = 42.dp),
-            pageSpacing = 16.dp,
+            contentPadding = PaddingValues(horizontal = 64.dp),
+            pageSpacing = 12.dp,
             modifier = Modifier.fillMaxWidth()
         ) { page ->
             val cracker = crackers[page]
@@ -66,8 +66,8 @@ fun CrackerPager(
                 (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
             ).absoluteValue.coerceIn(0f, 1f)
 
-            val cardScale = 1f - (pageOffset * 0.12f)
-            val cardAlpha = 1f - (pageOffset * 0.40f)
+            val cardScale = 1f - (pageOffset * 0.14f)
+            val cardAlpha = 1f - (pageOffset * 0.35f)
 
             Box(
                 modifier = Modifier
@@ -89,96 +89,38 @@ fun CrackerPager(
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        // Pager Controls: Left Arrow, Diya Dots, Right Arrow
+        // Diya / Indicator Dots (Centered without arrow buttons)
         Row(
             modifier = Modifier.padding(horizontal = 24.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Left Quick Arrow Button for young children
-            Box(
-                modifier = Modifier
-                    .size(34.dp)
-                    .clip(CircleShape)
-                    .background(Color(0x44000000))
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        enabled = pagerState.currentPage > 0
-                    ) {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                        }
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "◀",
-                    fontSize = 14.sp,
-                    color = if (pagerState.currentPage > 0) GoldYellow else Color.Gray.copy(alpha = 0.5f)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Diya / Indicator Dots
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                repeat(crackers.size) { index ->
-                    val isSelected = pagerState.currentPage == index
-                    if (isSelected) {
-                        // Elongated glowing pill for selected page
-                        Box(
-                            modifier = Modifier
-                                .width(28.dp)
-                                .height(9.dp)
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(FestiveOrange)
-                                .border(1.dp, GoldYellow, RoundedCornerShape(6.dp))
-                        )
-                    } else {
-                        // Inactive dot
-                        Box(
-                            modifier = Modifier
-                                .size(9.dp)
-                                .clip(CircleShape)
-                                .background(Color.White.copy(alpha = 0.35f))
-                                .clickable {
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(index)
-                                    }
+            repeat(crackers.size) { index ->
+                val isSelected = pagerState.currentPage == index
+                if (isSelected) {
+                    // Elongated glowing pill for selected page
+                    Box(
+                        modifier = Modifier
+                            .width(22.dp)
+                            .height(7.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(FestiveOrange)
+                            .border(1.dp, GoldYellow, RoundedCornerShape(4.dp))
+                    )
+                } else {
+                    // Inactive dot
+                    Box(
+                        modifier = Modifier
+                            .size(6.dp)
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.35f))
+                            .clickable {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
                                 }
-                        )
-                    }
+                            }
+                    )
                 }
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Right Quick Arrow Button
-            Box(
-                modifier = Modifier
-                    .size(34.dp)
-                    .clip(CircleShape)
-                    .background(Color(0x44000000))
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        enabled = pagerState.currentPage < crackers.size - 1
-                    ) {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                        }
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "▶",
-                    fontSize = 14.sp,
-                    color = if (pagerState.currentPage < crackers.size - 1) GoldYellow else Color.Gray.copy(alpha = 0.5f)
-                )
             }
         }
     }

@@ -5,12 +5,18 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,6 +49,8 @@ import com.example.diwali.ui.theme.GoldYellow
 fun WellDoneDialog(
     cracker: CrackerItem,
     earnedCoins: Int,
+    canPlayNext: Boolean = true,
+    coinsNeededForNext: Int = 0,
     onNextClick: () -> Unit,
     onRetryClick: () -> Unit,
     onHomeClick: () -> Unit,
@@ -92,17 +100,56 @@ fun WellDoneDialog(
 
             Spacer(modifier = Modifier.height(18.dp))
 
-            // Trophy 🏆
+            // Vector Golden Trophy
             Box(
                 modifier = Modifier
                     .size(90.dp)
                     .scale(trophyBounce.value),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "🏆",
-                    fontSize = 72.sp
-                )
+                Canvas(modifier = Modifier.size(76.dp)) {
+                    val w = size.width
+                    val h = size.height
+                    // Handles
+                    drawArc(
+                        color = GoldYellow,
+                        startAngle = 90f,
+                        sweepAngle = 180f,
+                        useCenter = false,
+                        topLeft = Offset(w * 0.12f, h * 0.22f),
+                        size = Size(w * 0.25f, h * 0.28f),
+                        style = Stroke(width = 4.dp.toPx())
+                    )
+                    drawArc(
+                        color = GoldYellow,
+                        startAngle = -90f,
+                        sweepAngle = 180f,
+                        useCenter = false,
+                        topLeft = Offset(w * 0.63f, h * 0.22f),
+                        size = Size(w * 0.25f, h * 0.28f),
+                        style = Stroke(width = 4.dp.toPx())
+                    )
+                    // Cup
+                    val cup = Path().apply {
+                        moveTo(w * 0.25f, h * 0.15f)
+                        lineTo(w * 0.75f, h * 0.15f)
+                        lineTo(w * 0.65f, h * 0.55f)
+                        cubicTo(w * 0.65f, h * 0.70f, w * 0.35f, h * 0.70f, w * 0.35f, h * 0.55f)
+                        close()
+                    }
+                    drawPath(cup, brush = Brush.verticalGradient(listOf(GoldLight, GoldYellow, Color(0xFFC67C00))))
+                    // Stem
+                    drawRect(color = GoldYellow, topLeft = Offset(w * 0.44f, h * 0.68f), size = Size(w * 0.12f, h * 0.14f))
+                    // Base
+                    drawRoundRect(
+                        color = Color(0xFFFFB300),
+                        topLeft = Offset(w * 0.28f, h * 0.82f),
+                        size = Size(w * 0.44f, h * 0.10f),
+                        cornerRadius = CornerRadius(4.dp.toPx(), 4.dp.toPx())
+                    )
+                    // Center Star
+                    drawCircle(color = Color.White, radius = 4.dp.toPx(), center = Offset(w * 0.5f, h * 0.36f))
+                }
             }
 
             Spacer(modifier = Modifier.height(14.dp))
@@ -120,7 +167,11 @@ fun WellDoneDialog(
                     .padding(horizontal = 18.dp, vertical = 8.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "🪙", fontSize = 18.sp)
+                    Canvas(modifier = Modifier.size(18.dp)) {
+                        val r = size.minDimension / 2f
+                        drawCircle(brush = Brush.radialGradient(listOf(GoldLight, GoldYellow, Color(0xFFC67C00))), radius = r, center = center)
+                        drawCircle(color = Color.White.copy(alpha = 0.7f), radius = r * 0.7f, center = center, style = Stroke(width = 1.4.dp.toPx()))
+                    }
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "+$earnedCoins COINS EARNED!",
@@ -131,35 +182,68 @@ fun WellDoneDialog(
                 }
             }
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // NEXT Button (Vibrant Green)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.72f)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(Color(0xFF76FF03), Color(0xFF00E676))
+            if (canPlayNext) {
+                // NEXT Button (Vibrant Green) - Visible ONLY when player has enough coins or already unlocked
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.72f)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color(0xFF76FF03), Color(0xFF00E676))
+                            )
                         )
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = onNextClick
+                        )
+                        .padding(vertical = 14.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "NEXT",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color(0xFF1B5E20)
                     )
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = onNextClick
-                    )
-                    .padding(vertical = 14.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "NEXT",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color(0xFF1B5E20)
-                )
-            }
+                }
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
+            } else {
+                // When NEXT is not affordable, completely hide NEXT and guide player to replay
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.85f)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Color(0xBB261405))
+                        .border(1.5.dp, Color(0xFFFFB300).copy(alpha = 0.75f), RoundedCornerShape(14.dp))
+                        .padding(horizontal = 14.dp, vertical = 10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "NEXT STAGE LOCKED",
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Black,
+                            color = GoldYellow
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Need $coinsNeededForNext more coins to unlock next stage.\nReplay this stage to earn more coins!",
+                            fontSize = 11.sp,
+                            lineHeight = 15.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.White.copy(alpha = 0.90f),
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
 
             // RETRY & HOME Buttons Row (Purple & Blue)
             Row(

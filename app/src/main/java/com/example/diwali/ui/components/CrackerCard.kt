@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -66,27 +68,27 @@ fun CrackerCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(32.dp))
+            .clip(RoundedCornerShape(26.dp))
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xE6261B4E),
-                        Color(0xE6140E2C)
+                        Color(0xF0221646),
+                        Color(0xF0120B28)
                     )
                 )
             )
             .border(
-                width = 2.5.dp,
+                width = 2.dp,
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        cracker.glowColor.copy(alpha = 0.8f),
-                        Color(0x33FFD54F),
-                        cracker.glowColor.copy(alpha = 0.4f)
+                        cracker.glowColor.copy(alpha = 0.85f),
+                        Color(0x44FFD54F),
+                        cracker.glowColor.copy(alpha = 0.5f)
                     )
                 ),
-                shape = RoundedCornerShape(32.dp)
+                shape = RoundedCornerShape(26.dp)
             )
-            .padding(20.dp)
+            .padding(14.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -101,10 +103,10 @@ fun CrackerCard(
                 // Badge
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
+                        .clip(RoundedCornerShape(10.dp))
                         .background(cracker.primaryColor.copy(alpha = 0.35f))
-                        .border(1.dp, cracker.primaryColor, RoundedCornerShape(12.dp))
-                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                        .border(1.dp, cracker.primaryColor, RoundedCornerShape(10.dp))
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
                 ) {
                     Text(
                         text = cracker.badgeText,
@@ -119,71 +121,77 @@ fun CrackerCard(
                     repeat(cracker.boomStars) {
                         Text(
                             text = "⭐",
-                            fontSize = 13.sp
+                            fontSize = 12.sp
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            // Animated Art Illustration of the Firecracker
+            // Animated Art Illustration of the Firecracker (Enlarged)
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.height(190.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(205.dp)
+                    .scale(1.08f)
             ) {
                 CrackerArtView(type = cracker.type)
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            // Names & Category
+            // English Name & Category
             Text(
-                text = cracker.nameGujarati,
-                fontSize = 20.sp,
+                text = cracker.name,
+                fontSize = 19.sp,
                 fontWeight = FontWeight.Black,
                 color = Color.White,
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(3.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
             Text(
                 text = cracker.category,
-                fontSize = 13.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = GoldLight,
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            // Kid-friendly Gujarati Description
+            // English Description
             Text(
                 text = cracker.description,
-                fontSize = 12.sp,
+                fontSize = 11.sp,
                 fontWeight = FontWeight.Normal,
-                color = Color(0xFFE0E0E0),
+                color = Color(0xFFDCDCDC),
                 textAlign = TextAlign.Center,
-                lineHeight = 16.sp,
-                modifier = Modifier.padding(horizontal = 8.dp)
+                lineHeight = 15.sp,
+                maxLines = 2,
+                modifier = Modifier.padding(horizontal = 4.dp)
             )
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Reward pill
             Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(14.dp))
                     .background(Color(0x33000000))
-                    .border(1.dp, GoldYellow.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
-                    .padding(horizontal = 14.dp, vertical = 5.dp)
+                    .border(1.dp, GoldYellow.copy(alpha = 0.35f), RoundedCornerShape(14.dp))
+                    .padding(horizontal = 12.dp, vertical = 4.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "🪙", fontSize = 13.sp)
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Canvas(modifier = Modifier.size(12.dp)) {
+                        drawCircle(brush = Brush.radialGradient(listOf(GoldLight, GoldYellow, Color(0xFFC67C00))))
+                    }
+                    Spacer(modifier = Modifier.width(5.dp))
                     Text(
-                        text = "ફોડવા પર +${cracker.rewardCoins} કોઈન મળશે!",
+                        text = "Earn +${cracker.rewardCoins} Coins on Burst!",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = GoldYellow
@@ -191,16 +199,16 @@ fun CrackerCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // Main Action Button (Burst or Unlock)
             if (isUnlocked) {
-                // BIG BURST / ફોડો! BUTTON
+                // BIG BURST BUTTON
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .scale(buttonPulse)
-                        .clip(RoundedCornerShape(22.dp))
+                        .clip(RoundedCornerShape(20.dp))
                         .background(
                             brush = Brush.horizontalGradient(
                                 colors = listOf(
@@ -210,32 +218,29 @@ fun CrackerCard(
                                 )
                             )
                         )
-                        .border(2.dp, GoldLight, RoundedCornerShape(22.dp))
+                        .border(1.5.dp, GoldLight, RoundedCornerShape(20.dp))
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
                             onClick = { onBurstClick(cracker) }
                         )
-                        .padding(vertical = 14.dp),
+                        .padding(vertical = 12.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = "💥", fontSize = 20.sp)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "BURST NOW / ફોડો!",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Black,
-                            color = Color.White
-                        )
-                    }
+                    Text(
+                        text = "BURST NOW",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White,
+                        letterSpacing = 0.5.sp
+                    )
                 }
             } else {
                 // UNLOCK BUTTON WITH PRICE
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(22.dp))
+                        .clip(RoundedCornerShape(20.dp))
                         .background(
                             brush = if (canAfford) {
                                 Brush.horizontalGradient(
@@ -254,9 +259,9 @@ fun CrackerCard(
                             }
                         )
                         .border(
-                            width = 2.dp,
+                            width = 1.5.dp,
                             color = if (canAfford) GoldYellow else Color.Gray,
-                            shape = RoundedCornerShape(22.dp)
+                            shape = RoundedCornerShape(20.dp)
                         )
                         .clickable(
                             enabled = canAfford,
@@ -264,26 +269,19 @@ fun CrackerCard(
                             indication = null,
                             onClick = { onUnlockClick(cracker) }
                         )
-                        .padding(vertical = 14.dp),
+                        .padding(vertical = 12.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = if (canAfford) "🔓" else "🔒",
-                            fontSize = 18.sp
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = if (canAfford) {
-                                "UNLOCK FOR ${cracker.price} 🪙"
-                            } else {
-                                "NEED ${cracker.price} 🪙 TO UNLOCK"
-                            },
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = if (canAfford) Color.White else Color(0xFFBDBDBD)
-                        )
-                    }
+                    Text(
+                        text = if (canAfford) {
+                            "UNLOCK (${cracker.price} COINS)"
+                        } else {
+                            "NEED ${cracker.price} COINS TO UNLOCK"
+                        },
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (canAfford) Color.White else Color(0xFFBDBDBD)
+                    )
                 }
             }
         }
