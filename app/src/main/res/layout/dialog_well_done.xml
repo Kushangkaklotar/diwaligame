@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_festive"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/_20sdp"
+    android:paddingTop="@dimen/_24sdp"
+    android:paddingEnd="@dimen/_20sdp"
+    android:paddingBottom="@dimen/_24sdp">
+
+    <!-- Celebration Title -->
+    <TextView
+        android:id="@+id/tvWellDoneTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:letterSpacing="0.06"
+        android:text="WELL DONE!"
+        android:textColor="@color/gold_yellow"
+        android:textSize="@dimen/_22ssp"
+        android:textStyle="bold" />
+
+    <!-- Golden Trophy Icon -->
+    <ImageView
+        android:id="@+id/ivTrophy"
+        android:layout_width="@dimen/_64sdp"
+        android:layout_height="@dimen/_64sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:src="@drawable/ic_trophy" />
+
+    <!-- Reward Earned Capsule -->
+    <LinearLayout
+        android:id="@+id/llRewardCapsule"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_32sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:background="@drawable/bg_coin_capsule"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/_14sdp"
+        android:paddingEnd="@dimen/_14sdp">
+
+        <ImageView
+            android:layout_width="@dimen/_18sdp"
+            android:layout_height="@dimen/_18sdp"
+            android:src="@drawable/ic_coin" />
+
+        <TextView
+            android:id="@+id/tvRewardEarned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:fontFamily="sans-serif-black"
+            android:text="+50 COINS EARNED!"
+            android:textColor="@color/gold_yellow"
+            android:textSize="@dimen/_11ssp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Locked Next Stage Notice (shown when not enough coins) -->
+    <TextView
+        android:id="@+id/tvNextLockedBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_14sdp"
+        android:background="@drawable/bg_pill_dark"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:paddingTop="@dimen/_6sdp"
+        android:paddingBottom="@dimen/_6sdp"
+        android:text="NEXT STAGE LOCKED\nNeed 100 more coins"
+        android:textColor="@color/festive_red"
+        android:textSize="@dimen/_10ssp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <!-- NEXT BUTTON (strictly hidden if not enough coins) -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnNextLevel"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_44sdp"
+        android:layout_marginTop="@dimen/_14sdp"
+        android:background="@drawable/bg_btn_start_blasting"
+        android:fontFamily="sans-serif-black"
+        android:letterSpacing="0.04"
+        android:text="NEXT"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14ssp"
+        android:textStyle="bold" />
+
+    <!-- RETRY and HOME Buttons Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnRetry"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_btn_levels"
+            android:fontFamily="sans-serif-black"
+            android:text="RETRY"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12ssp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnHome"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_marginStart="@dimen/_6sdp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_pill_dark"
+            android:fontFamily="sans-serif-black"
+            android:text="HOME"
+            android:textColor="@color/gold_light"
+            android:textSize="@dimen/_12ssp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

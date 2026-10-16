@@ -297,4 +297,6 @@ object CrackerRepository {
             glowColor = Color(0xFFFFFFFF)
         )
     )
+
+    fun getCrackerById(id: String): CrackerItem? = crackers.firstOrNull { it.id == id }
 }

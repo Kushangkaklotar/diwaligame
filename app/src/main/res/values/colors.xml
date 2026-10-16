@@ -7,4 +7,31 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Diwali Theme Colors -->
+    <color name="gold_light">#FFFFE082</color>
+    <color name="gold_yellow">#FFFFD54F</color>
+    <color name="gold_dark">#FFFF8F00</color>
+    <color name="gold_coin">#FFFFC107</color>
+
+    <color name="diwali_night_top">#FF0D0B2E</color>
+    <color name="diwali_night_mid">#FF1B1446</color>
+    <color name="diwali_night_bottom">#FF2C1654</color>
+    <color name="bg_dark_gradient_start">#FF09071E</color>
+    <color name="bg_dark_gradient_end">#FF170F35</color>
+
+    <color name="festive_orange">#FFFF6D00</color>
+    <color name="festive_red">#FFE53935</color>
+    <color name="festive_red_dark">#FF8E0000</color>
+    <color name="festive_pink">#FFE91E63</color>
+    <color name="festive_cyan">#FF00E5FF</color>
+    <color name="festive_green">#FF00E676</color>
+    <color name="festive_green_dark">#FF008A32</color>
+    <color name="festive_purple">#FF9C27B0</color>
+    <color name="festive_purple_dark">#FF4A148C</color>
+
+    <color name="card_bg_dark">#E6151030</color>
+    <color name="card_border_glow">#40FFD54F</color>
+    <color name="pill_bg">#88000000</color>
+    <color name="dialog_bg">#F2130D2E</color>
 </resources>

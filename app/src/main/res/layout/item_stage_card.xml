@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/_16sdp"
+    android:background="@drawable/bg_dialog_festive"
+    android:orientation="vertical"
+    android:padding="@dimen/_10sdp">
+
+    <!-- Header Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/composeCardCrackerIcon"
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvCardCrackerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-black"
+                android:text="Sutli Bomb"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13ssp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCardCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mega Blaster • Super Boom"
+                android:textColor="@color/gold_yellow"
+                android:textSize="@dimen/_9ssp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvCardStagePill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_pill_dark"
+            android:fontFamily="sans-serif-black"
+            android:paddingStart="@dimen/_8sdp"
+            android:paddingTop="@dimen/_3sdp"
+            android:paddingEnd="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_3sdp"
+            android:text="Stage 25/25"
+            android:textColor="@color/gold_light"
+            android:textSize="@dimen/_9ssp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Highlighted Active Detail Box -->
+    <LinearLayout
+        android:id="@+id/llActiveDetailBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:background="@drawable/bg_pill_dark"
+        android:orientation="vertical"
+        android:padding="@dimen/_8sdp">
+
+        <TextView
+            android:id="@+id/tvActiveLevelTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:text="Level 25: Brahmand Sutli Bomb (FINAL BOSS)"
+            android:textColor="@color/gold_yellow"
+            android:textSize="@dimen/_10ssp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvActiveLevelDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:text="Phase 5: The Ultimate Mega Bomb (The Final Boss) • Supreme Mega Blast with colossal shockwave!"
+            android:textColor="#CCFFFFFF"
+            android:textSize="@dimen/_8ssp" />
+    </LinearLayout>
+
+    <!-- 25-Stage Grid (4 columns) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvLevelNodesGrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:nestedScrollingEnabled="false" />
+
+</LinearLayout>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/clShelfCardRoot"
+    android:layout_width="@dimen/_115sdp"
+    android:layout_height="match_parent"
+    android:layout_marginEnd="@dimen/_10sdp"
+    android:background="@drawable/bg_dialog_festive"
+    android:padding="@dimen/_2sdp">
+
+    <!-- Category Header Strip -->
+    <LinearLayout
+        android:id="@+id/llCategoryHeader"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_20sdp"
+        android:background="#336A1B9A"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/_8sdp"
+        android:paddingEnd="@dimen/_8sdp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvCategoryName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-black"
+            android:maxLines="1"
+            android:text="SUPER BOOM"
+            android:textColor="@color/gold_light"
+            android:textSize="@dimen/_8ssp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.1"
+            android:text="•••"
+            android:textColor="@color/gold_yellow"
+            android:textSize="@dimen/_8ssp" />
+    </LinearLayout>
+
+    <!-- Center Icon Canvas Preview -->
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composeShelfCrackerIcon"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/tvShelfCrackerName"
+        app:layout_constraintTop_toBottomOf="@id/llCategoryHeader" />
+
+    <!-- Cracker Name -->
+    <TextView
+        android:id="@+id/tvShelfCrackerName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_4sdp"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingStart="@dimen/_4sdp"
+        android:paddingEnd="@dimen/_4sdp"
+        android:text="Sutli Bomb"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_11ssp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tvShelfBadge" />
+
+    <!-- Status / Action Badge -->
+    <TextView
+        android:id="@+id/tvShelfBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:background="@drawable/bg_pill_dark"
+        android:fontFamily="sans-serif-black"
+        android:paddingStart="@dimen/_10sdp"
+        android:paddingTop="@dimen/_2sdp"
+        android:paddingEnd="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_2sdp"
+        android:text="SELECTED"
+        android:textColor="@color/festive_orange"
+        android:textSize="@dimen/_8ssp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

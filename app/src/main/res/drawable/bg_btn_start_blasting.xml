@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#44FFFFFF">
+    <item>
+        <layer-list>
+            <!-- 3D Bottom Shadow Bevel -->
+            <item android:top="@dimen/_4sdp">
+                <shape android:shape="rectangle">
+                    <corners android:radius="@dimen/_28sdp" />
+                    <solid android:color="#FF7F0000" />
+                </shape>
+            </item>
+            <!-- Raised Front Surface -->
+            <item android:bottom="@dimen/_4sdp">
+                <shape android:shape="rectangle">
+                    <corners android:radius="@dimen/_28sdp" />
+                    <gradient
+                        android:type="linear"
+                        android:angle="90"
+                        android:startColor="#FFE53935"
+                        android:endColor="#FFFF6D00" />
+                    <stroke
+                        android:width="@dimen/_2sdp"
+                        android:color="#FFFFD54F" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</ripple>

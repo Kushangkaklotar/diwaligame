@@ -72,80 +72,7 @@ fun TopBarView(
             .fillMaxWidth()
     ) {
         // 1. Animated Diwali Fairy Lights Garland across the top
-        val infiniteTransition = androidx.compose.animation.core.rememberInfiniteTransition(label = "FairyLights")
-        val lightGlow by infiniteTransition.animateFloat(
-            initialValue = 0.5f,
-            targetValue = 1.0f,
-            animationSpec = androidx.compose.animation.core.infiniteRepeatable(
-                animation = androidx.compose.animation.core.tween(1200, easing = androidx.compose.animation.core.FastOutSlowInEasing),
-                repeatMode = androidx.compose.animation.core.RepeatMode.Reverse
-            ),
-            label = "LightGlow"
-        )
-
-        androidx.compose.foundation.Canvas(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(18.dp)
-        ) {
-            val w = size.width
-            val bulbColors = listOf(
-                Color(0xFFFF1744), // Ruby Red
-                Color(0xFFFFD600), // Gold
-                Color(0xFF00E676), // Emerald
-                Color(0xFF00E5FF), // Cyan
-                Color(0xFFFF4081), // Pink
-                Color(0xFF7C4DFF), // Purple
-                Color(0xFFFF9100), // Orange
-                Color(0xFF76FF03), // Lime
-                Color(0xFFFFD600)  // Gold
-            )
-            val bulbCount = bulbColors.size
-            val step = w / (bulbCount + 1)
-
-            // Draw drooped hanging string wire
-            val wirePath = androidx.compose.ui.graphics.Path().apply {
-                moveTo(0f, 2f)
-                for (i in 0..bulbCount) {
-                    val x1 = i * step
-                    val x2 = (i + 1) * step
-                    val midX = (x1 + x2) / 2f
-                    quadraticTo(midX, 10f, x2, 2f)
-                }
-            }
-            drawPath(
-                path = wirePath,
-                color = Color(0x66FFFFFF),
-                style = androidx.compose.ui.graphics.drawscope.Stroke(width = 1.2.dp.toPx())
-            )
-
-            // Draw glowing bulb at each junction
-            for (i in 0 until bulbCount) {
-                val bx = (i + 1) * step
-                val by = 9f
-                val color = bulbColors[i]
-                val pulse = if (i % 2 == 0) lightGlow else (1.5f - lightGlow)
-
-                // Soft glow halo
-                drawCircle(
-                    color = color.copy(alpha = 0.35f * pulse),
-                    radius = 8.dp.toPx() * pulse,
-                    center = Offset(bx, by)
-                )
-                // Bulb socket
-                drawRect(
-                    color = Color(0xFF37474F),
-                    topLeft = Offset(bx - 1.5.dp.toPx(), by - 4.dp.toPx()),
-                    size = androidx.compose.ui.geometry.Size(3.dp.toPx(), 3.dp.toPx())
-                )
-                // Vibrant bulb core
-                drawCircle(
-                    brush = Brush.radialGradient(listOf(Color.White, color)),
-                    radius = 3.6.dp.toPx(),
-                    center = Offset(bx, by + 1.dp.toPx())
-                )
-            }
-        }
+        GarlandFairyLights()
 
         // 2. Main Top Row: Game Title & Controls
         Row(
@@ -305,7 +232,85 @@ fun TopBarView(
                     )
                 }
             }
+            }
         }
     }
 }
+
+@Composable
+fun GarlandFairyLights(modifier: Modifier = Modifier) {
+    val infiniteTransition = androidx.compose.animation.core.rememberInfiniteTransition(label = "FairyLights")
+    val lightGlow by infiniteTransition.animateFloat(
+        initialValue = 0.5f,
+        targetValue = 1.0f,
+        animationSpec = androidx.compose.animation.core.infiniteRepeatable(
+            animation = androidx.compose.animation.core.tween(1200, easing = androidx.compose.animation.core.FastOutSlowInEasing),
+            repeatMode = androidx.compose.animation.core.RepeatMode.Reverse
+        ),
+        label = "LightGlow"
+    )
+
+    androidx.compose.foundation.Canvas(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(18.dp)
+    ) {
+        val w = size.width
+        val bulbColors = listOf(
+            Color(0xFFFF1744), // Ruby Red
+            Color(0xFFFFD600), // Gold
+            Color(0xFF00E676), // Emerald
+            Color(0xFF00E5FF), // Cyan
+            Color(0xFFFF4081), // Pink
+            Color(0xFF7C4DFF), // Purple
+            Color(0xFFFF9100), // Orange
+            Color(0xFF76FF03), // Lime
+            Color(0xFFFFD600)  // Gold
+        )
+        val bulbCount = bulbColors.size
+        val step = w / (bulbCount + 1)
+
+        // Draw drooped hanging string wire
+        val wirePath = androidx.compose.ui.graphics.Path().apply {
+            moveTo(0f, 2f)
+            for (i in 0..bulbCount) {
+                val x1 = i * step
+                val x2 = (i + 1) * step
+                val midX = (x1 + x2) / 2f
+                quadraticTo(midX, 10f, x2, 2f)
+            }
+        }
+        drawPath(
+            path = wirePath,
+            color = Color(0x66FFFFFF),
+            style = androidx.compose.ui.graphics.drawscope.Stroke(width = 1.2.dp.toPx())
+        )
+
+        // Draw glowing bulb at each junction
+        for (i in 0 until bulbCount) {
+            val bx = (i + 1) * step
+            val by = 9f
+            val color = bulbColors[i]
+            val pulse = if (i % 2 == 0) lightGlow else (1.5f - lightGlow)
+
+            // Soft glow halo
+            drawCircle(
+                color = color.copy(alpha = 0.35f * pulse),
+                radius = 8.dp.toPx() * pulse,
+                center = Offset(bx, by)
+            )
+            // Bulb socket
+            drawRect(
+                color = Color(0xFF37474F),
+                topLeft = Offset(bx - 1.5.dp.toPx(), by - 4.dp.toPx()),
+                size = androidx.compose.ui.geometry.Size(3.dp.toPx(), 3.dp.toPx())
+            )
+            // Vibrant bulb core
+            drawCircle(
+                brush = Brush.radialGradient(listOf(Color.White, color)),
+                radius = 3.6.dp.toPx(),
+                center = Offset(bx, by + 1.dp.toPx())
+            )
+        }
+    }
 }

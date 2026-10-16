@@ -146,4 +146,9 @@ class GamePreferences(context: Context) {
         prefs.edit().putBoolean(KEY_SOUND_ENABLED, newValue).apply()
         return newValue
     }
+
+    fun setSoundEnabled(enabled: Boolean) {
+        _isSoundEnabled.value = enabled
+        prefs.edit().putBoolean(KEY_SOUND_ENABLED, enabled).apply()
+    }
 }

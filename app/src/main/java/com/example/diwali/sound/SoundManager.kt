@@ -542,4 +542,10 @@ class SoundManager(private val context: Context) {
             track.release()
         } catch (_: Exception) {}
     }
+
+    fun release() {
+        try {
+            soundPool.release()
+        } catch (_: Exception) {}
+    }
 }

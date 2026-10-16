@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llNodeRoot"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_52sdp"
+    android:layout_margin="@dimen/_3sdp"
+    android:background="@drawable/bg_pill_dark"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/_2sdp">
+
+    <TextView
+        android:id="@+id/tvNodeLevelNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:text="25"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_13ssp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvNodeSubtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:letterSpacing="0.05"
+        android:maxLines="1"
+        android:text="PLAY"
+        android:textColor="@color/gold_light"
+        android:textSize="@dimen/_7ssp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/ivNodeLock"
+        android:layout_width="@dimen/_12sdp"
+        android:layout_height="@dimen/_12sdp"
+        android:src="@drawable/ic_lock"
+        android:visibility="gone" />
+
+</LinearLayout>

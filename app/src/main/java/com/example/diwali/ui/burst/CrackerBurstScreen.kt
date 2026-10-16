@@ -78,6 +78,9 @@ fun CrackerBurstScreen(
     preferences: GamePreferences,
     soundManager: SoundManager,
     onBackToHome: () -> Unit,
+    showTopBar: Boolean = true,
+    showInternalDialog: Boolean = true,
+    onBurstCompleteCallback: ((reward: Int, level: Int, nextLevelAction: (CrackerItem, Int) -> Unit, retryAction: () -> Unit) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     // Intercept hardware/system back press to return to Home screen
@@ -222,6 +225,18 @@ fun CrackerBurstScreen(
                         preferences.completeLevel(currentCracker.id, currentLevel)
                         soundManager.playWellDoneFanfare(isSoundEnabled)
                         stage = BurstStage.COMPLETED
+                        onBurstCompleteCallback?.invoke(
+                            earnedReward,
+                            currentLevel,
+                            { nextCracker, nextLvl ->
+                                currentCracker = nextCracker
+                                currentLevel = nextLvl
+                                resetSequence(nextCracker)
+                            },
+                            {
+                                resetSequence()
+                            }
+                        )
                     },
                     modifier = Modifier.fillMaxSize()
                 )
@@ -229,7 +244,8 @@ fun CrackerBurstScreen(
         }
 
         // 2. Top Navigation Bar (Proper statusBarsPadding, Back Button, Cracker Title, No Pause Button)
-        Row(
+        if (showTopBar) {
+            Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
@@ -299,6 +315,7 @@ fun CrackerBurstScreen(
 
             // Empty spacer matching back button width for balanced centering
             Spacer(modifier = Modifier.size(44.dp))
+        }
         }
 
         // 3. Interactive Draggable Lighter (Free movement across screen, ignites ONLY at fuse tip string)
@@ -386,7 +403,7 @@ fun CrackerBurstScreen(
         }
 
         // 4. "WELL DONE! 🏆" Celebration Dialog upon completion
-        if (stage == BurstStage.COMPLETED) {
+        if (showInternalDialog && stage == BurstStage.COMPLETED) {
             val earnedReward = CrackerLevelConfig.getLevelRewardCoins(currentCracker.rewardCoins, currentLevel)
             val totalLevels = CrackerLevelConfig.TOTAL_LEVELS_PER_CRACKER
             val nextLevel = currentLevel + 1
